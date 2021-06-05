@@ -6,7 +6,16 @@ namespace FedoraDev.PointOfInterest.Implementations
 {
 	public class PointOfInterestContainerBehaviour : SerializedMonoBehaviour, IPointOfInterestContainer
 	{
-		Dictionary<IPointOfInterest, Transform> _pointsOfInterest = new Dictionary<IPointOfInterest, Transform>();
+		[ShowInInspector, ReadOnly] Dictionary<IPointOfInterest, Transform> _pointsOfInterest = new Dictionary<IPointOfInterest, Transform>();
+
+		[Button("Find Points of Interest")]
+		private void FindPOIs()
+		{
+			PointOfInterestBehaviour[] pointsOfInterest = FindObjectsOfType<PointOfInterestBehaviour>();
+
+			foreach (PointOfInterestBehaviour pointOfInterest in pointsOfInterest)
+				RegisterPointOfInterest(pointOfInterest.PointOfInterest, pointOfInterest.transform);
+		}
 
 		public void RegisterPointOfInterest(IPointOfInterest pointOfInterest, Transform transform)
 		{

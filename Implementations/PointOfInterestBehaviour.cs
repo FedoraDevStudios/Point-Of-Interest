@@ -8,10 +8,7 @@ namespace FedoraDev.PointOfInterest.Implementations
     {
         [SerializeField, HideLabel, BoxGroup("Point of Interest"), InlineEditor] IPointOfInterest _pointOfInterest;
 
-		private void Start()
-		{
-			FindObjectOfType<PointOfInterestContainerBehaviour>().RegisterPointOfInterest(_pointOfInterest, transform);
-		}
+        public IPointOfInterest PointOfInterest => _pointOfInterest;
 
 		public void OnDrawGizmos() => _pointOfInterest?.DrawGizmos(transform);
 	}
