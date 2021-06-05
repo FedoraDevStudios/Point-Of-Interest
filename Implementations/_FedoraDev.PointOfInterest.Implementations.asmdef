@@ -1,0 +1,16 @@
+{
+    "name": "_FedoraDev.PointOfInterest.Implementations",
+    "rootNamespace": "FedoraDev.PointOfInterest.Implementations",
+    "references": [
+        "GUID:82c66337bf5c4a949874dfc1140583d7"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,12 @@
+{
+	"name": "com.fedoradev.pointofinterest",
+	"displayName": "Point of Interest",
+	"version": "1.0.0",
+	"unity": "2020.3",
+	"unityRelease": "2f1",
+	"description": "A system for tracking points of interest in Unity scenes.",
+	"author": {
+		"name": "Fedora Dev",
+		"email": "fedora.game.dev@gmail.com"
+	}
+}
