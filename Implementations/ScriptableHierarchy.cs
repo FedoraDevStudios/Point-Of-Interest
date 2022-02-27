@@ -1,4 +1,5 @@
 using Sirenix.OdinInspector;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace FedoraDev.PointOfInterest.Implementations
@@ -10,12 +11,7 @@ namespace FedoraDev.PointOfInterest.Implementations
 
 		[SerializeField, InlineEditor] IHierarchy _hierarchy;
 
-		public IHierarchyPiece[] GetPath(IHierarchyPiece from, IHierarchyPiece to) => throw new System.NotImplementedException();
-
-		[Button]
-		void AssignParents()
-		{
-			Root.AssignParents(null);
-		}
+		IHierarchyPiece[] IHierarchy.GetPath(IHierarchyPiece from, IHierarchyPiece to) => _hierarchy.GetPath(from, to);
+		[Button] void AssignParents() => Root.AssignParents(null);
 	}
 }
