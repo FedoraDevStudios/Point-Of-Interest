@@ -1,9 +1,8 @@
 {
-    "name": "_FedoraDev.PointOfInterest.Implementations",
-    "rootNamespace": "FedoraDev.PointOfInterest.Implementations",
+    "name": "_FedoraDev.PointOfInterest.Abstract",
+    "rootNamespace": "FedoraDev.PointOfInterest.Abstract",
     "references": [
-        "GUID:82c66337bf5c4a949874dfc1140583d7",
-        "GUID:08a0cd0bce6471041b2b8e4e19a506ee"
+        "GUID:82c66337bf5c4a949874dfc1140583d7"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -4,6 +4,8 @@ namespace FedoraDev.PointOfInterest.Implementations
 {
 	public class PositionalPointOfInterest : IPointOfInterest
 	{
+		public string Name => "Positional POI";
+
 		public void DrawGizmos(Transform transform)
 		{
 			float armLength = 0.5f;
