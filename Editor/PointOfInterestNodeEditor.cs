@@ -260,8 +260,34 @@ namespace FedoraDev.PointOfInterest.Editor
 				Vector3 pos = new Vector3(bridge.Position.x + (_bridgeSize.x / 2), bridge.Position.y + (_bridgeSize.y / 2), 0);
 				for (int j = 0; j < bridge.Connections.Length; j++)
 				{
-					Rect nodePos = bridge.Connections[j].Node.Position;
+					INode node = bridge.Connections[j].Node;
+					Rect nodePos = node.Position;
+					Vector2 deletePosition = (new Vector2(node.Position.x + (_nodeSize.x / 2), node.Position.y + (_nodeSize.y / 2)) + new Vector2(bridge.Position.x + (_bridgeSize.x / 2), bridge.Position.y + (_bridgeSize.y / 2))) / 2;
+					Vector2 floatPosition = deletePosition + new Vector2(-25, 20);
+
 					Handles.DrawLine(new Vector3(nodePos.x + (_nodeSize.x / 2), nodePos.y + (_nodeSize.y / 2), 0), pos, 3f);
+					if (GUI.Button(new Rect(deletePosition.x - 10, deletePosition.y - 10, 20, 20), "x"))
+					{
+						List<INodeBridge> bridges = new List<INodeBridge>(node.Bridges);
+						bridges.Remove(bridge);
+						node.Bridges = bridges.ToArray();
+
+						List<INodeBridgeConnection> conns = new List<INodeBridgeConnection>(bridge.Connections);
+						conns.RemoveAt(j);
+						bridge.Connections = conns.ToArray();
+						GUI.changed = true;
+
+						return;
+					}
+
+					float oldValue = bridge.Connections[j].Distance;
+					bridge.Connections[j].Distance = EditorGUI.FloatField(new Rect(floatPosition.x, floatPosition.y, 50, 20), bridge.Connections[j].Distance);
+					if (bridge.Connections[j].Distance != oldValue)
+					{
+						AssetDatabase.SaveAssets();
+						GUI.changed = true;
+						return;
+					}
 				}
 				Handles.EndGUI();
 

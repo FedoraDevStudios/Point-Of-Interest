@@ -12,6 +12,9 @@ namespace FedoraDev.PointOfInterest.Implementations
 		{
 			get
 			{
+#if UNITY_EDITOR
+				UnityEditor.EditorUtility.SetDirty(this);
+#endif
 				if (_nodes == null)
 					_nodes = new INode[0];
 				return _nodes;
@@ -27,7 +30,13 @@ namespace FedoraDev.PointOfInterest.Implementations
 
 		public Vector2 Offset
 		{
-			get => _offset;
+			get
+			{
+#if UNITY_EDITOR
+				UnityEditor.EditorUtility.SetDirty(this);
+#endif
+				return _offset;
+			}
 			set
 			{
 				_offset = value;
@@ -41,6 +50,9 @@ namespace FedoraDev.PointOfInterest.Implementations
 		{
 			get
 			{
+#if UNITY_EDITOR
+				UnityEditor.EditorUtility.SetDirty(this);
+#endif
 				if (_bridges == null)
 					_bridges = new INodeBridge[0];
 				return _bridges;
