@@ -1,17 +1,20 @@
+using System;
 using UnityEngine;
 
 namespace FedoraDev.PointOfInterest.Abstract
 {
+	public delegate void MoveCallback(Vector2 delta);
+
     public class NodeDragHelper
     {
-		public static bool ProcessDrag(Event currentEvent, ref Rect position, ref bool isDragged)
+		public static bool ProcessDrag(Event currentEvent, MoveCallback move, Action place, Rect correctedPosition, ref bool isDragged)
 		{
 			switch (currentEvent.type)
 			{
 				case EventType.MouseDown:
 					if (currentEvent.button == 0)
 					{
-						if (position.Contains(currentEvent.mousePosition))
+						if (correctedPosition.Contains(currentEvent.mousePosition))
 							isDragged = true;
 						GUI.changed = true;
 					}
@@ -19,12 +22,13 @@ namespace FedoraDev.PointOfInterest.Abstract
 
 				case EventType.MouseUp:
 					isDragged = false;
+					place.Invoke();
 					break;
 
 				case EventType.MouseDrag:
 					if (currentEvent.button == 0 && isDragged)
 					{
-						position.position += currentEvent.delta;
+						move(currentEvent.delta);
 						currentEvent.Use();
 						return true;
 					}

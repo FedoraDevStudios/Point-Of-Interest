@@ -14,8 +14,7 @@ namespace FedoraDev.PointOfInterest.Editor
 			if (nodeWeb == null)
 				return false;
 
-			PointOfInterestNodeEditor.NodeWeb = nodeWeb;
-			PointOfInterestNodeEditor.OpenWindow();
+			PointOfInterestNodeEditor.OpenWindow(nodeWeb);
 			return true;
 		}
 	}

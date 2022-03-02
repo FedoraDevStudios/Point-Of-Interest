@@ -1,3 +1,4 @@
+using Sirenix.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +10,12 @@ namespace FedoraDev.PointOfInterest.Editor
 	public class PointOfInterestNodeEditor : EditorWindow
 	{
 		#region Properties
+		const string EDITOR_PREF_LAST_OPENED_KEY = "Last Node Web";
 		const string FACTORY_PATH = "Assets/Fedora Dev/";
 		const string FACTORY_NAME = "Point Of Interest Factory.asset";
 		static string FactoryAsset => $"{FACTORY_PATH}{FACTORY_NAME}";
 
-		public static INodeWeb NodeWeb { get; set; }
+		public INodeWeb NodeWeb { get => _nodeWeb; set => _nodeWeb = value; }
 
 		IFactory FactoryInstance
 		{
@@ -29,6 +31,8 @@ namespace FedoraDev.PointOfInterest.Editor
 			}
 		}
 
+		[OdinSerialize] INodeWeb _nodeWeb;
+
 		IFactory _factoryInstance;
 		string _targetLocation = "";
 		GUIStyle _nodeStyle;
@@ -37,8 +41,6 @@ namespace FedoraDev.PointOfInterest.Editor
 		GUIStyle _connectionStyle;
 		GUIStyle _uiPositionStyle;
 		Type[] _nodeWebClasses;
-		Vector2 _nodeSize = new Vector2(100, 100);
-		Vector2 _bridgeSize = new Vector2(75, 50);
 		INode _connectingFromNode;
 		bool _connectingNodes;
 		#endregion
@@ -48,10 +50,36 @@ namespace FedoraDev.PointOfInterest.Editor
 		public static void OpenWindow()
 		{
 			PointOfInterestNodeEditor window = GetWindow<PointOfInterestNodeEditor>();
-			if (NodeWeb == null)
-				window.titleContent = new GUIContent("POI Web - New");
+			if (window.NodeWeb == null)
+			{
+				string assetPath = EditorPrefs.GetString(EDITOR_PREF_LAST_OPENED_KEY);
+				if (assetPath == string.Empty)
+				{
+					window.titleContent = new GUIContent("POI Web - New");
+					return;
+				}
+
+				INodeWeb asset = AssetDatabase.LoadAssetAtPath(assetPath, typeof(ScriptableObject)) as INodeWeb;
+				if (asset == null)
+				{
+					window.titleContent = new GUIContent("POI Web - New");
+					EditorPrefs.SetString(EDITOR_PREF_LAST_OPENED_KEY, string.Empty);
+					return;
+				}
+
+				window.NodeWeb = asset;
+				window.titleContent = new GUIContent($"POI Web - {window.NodeWeb.Name}");
+			}
 			else
-				window.titleContent = new GUIContent($"POI Web - {NodeWeb.Name}");
+				window.titleContent = new GUIContent($"POI Web - {window.NodeWeb.Name}");
+		}
+
+		public static void OpenWindow(INodeWeb nodeWeb)
+		{
+			PointOfInterestNodeEditor window = GetWindow<PointOfInterestNodeEditor>();
+			window.NodeWeb = nodeWeb;
+			window.titleContent = new GUIContent($"POI Web - {window.NodeWeb.Name}");
+			EditorPrefs.SetString(EDITOR_PREF_LAST_OPENED_KEY, AssetDatabase.GetAssetPath(nodeWeb as ScriptableObject));
 		}
 
 		void OnEnable()
@@ -79,9 +107,9 @@ namespace FedoraDev.PointOfInterest.Editor
 			if (NodeWeb != null)
 			{
 				for (int i = 0; i < NodeWeb.Nodes.Length; i++)
-					NodeWeb.Nodes[i].Position = new Rect(NodeWeb.Nodes[i].Position.x, NodeWeb.Nodes[i].Position.y, _nodeSize.x, _nodeSize.y);
+					NodeWeb.Nodes[i].Position = new Rect(NodeWeb.Nodes[i].Position.x, NodeWeb.Nodes[i].Position.y, NodeWeb.Nodes[i].Size.x, NodeWeb.Nodes[i].Size.y);
 				for (int i = 0; i < NodeWeb.Bridges.Length; i++)
-					NodeWeb.Bridges[i].Position = new Rect(NodeWeb.Bridges[i].Position.x, NodeWeb.Bridges[i].Position.y, _bridgeSize.x, _bridgeSize.y);
+					NodeWeb.Bridges[i].Position = new Rect(NodeWeb.Bridges[i].Position.x, NodeWeb.Bridges[i].Position.y, NodeWeb.Bridges[i].Size.x, NodeWeb.Bridges[i].Size.y);
 			}
 		}
 
@@ -171,6 +199,7 @@ namespace FedoraDev.PointOfInterest.Editor
 		}
 		#endregion
 
+		#region Drawing
 		void DrawGrid(float spacing, float opacity, Color color)
 		{
 			int widthDivs = Mathf.CeilToInt(position.width / spacing);
@@ -188,7 +217,7 @@ namespace FedoraDev.PointOfInterest.Editor
 			if (NodeWeb.Offset.y < 0)
 				offsetY = spacing - offsetY;
 
-			Vector3 offset = new Vector3(offsetX, offsetY, 0f);
+			Vector3 offset = new Vector3(Mathf.Round(offsetX / 10) * 10, Mathf.Round(offsetY / 10) * 10, 0f);
 
 			for (int i = 0; i < widthDivs; i++)
 				Handles.DrawLine(new Vector3(spacing * i, -spacing, 0f) + offset, new Vector3(spacing * i, position.height, 0f) + offset);
@@ -203,12 +232,14 @@ namespace FedoraDev.PointOfInterest.Editor
 		{
 			Handles.BeginGUI();
 			Handles.color = Color.blue;
+			float offsetX = Mathf.Round(NodeWeb.Offset.x / 10) * 10;
+			float offsetY = Mathf.Round(NodeWeb.Offset.y / 10) * 10;
 
 			if (NodeWeb.Offset.x > -5f && NodeWeb.Offset.x < position.width + 5f)
-				Handles.DrawLine(new Vector3(NodeWeb.Offset.x, -5, 0), new Vector3(NodeWeb.Offset.x, position.height + 5, 0), 2f); //Vertical Line
+				Handles.DrawLine(new Vector3(offsetX, -5, 0), new Vector3(offsetX, position.height + 5, 0), 2f); //Vertical Line
 
 			if (NodeWeb.Offset.y > -5f && NodeWeb.Offset.y < position.height + 5f)
-				Handles.DrawLine(new Vector3(-5, NodeWeb.Offset.y, 0), new Vector3(position.width + 5, NodeWeb.Offset.y, 0), 2f); //Horizontal Line
+				Handles.DrawLine(new Vector3(-5, offsetY, 0), new Vector3(position.width + 5, offsetY, 0), 2f); //Horizontal Line
 			Handles.EndGUI();
 		}
 
@@ -217,7 +248,7 @@ namespace FedoraDev.PointOfInterest.Editor
 			if (_connectingNodes)
 			{
 				Handles.color = Color.blue;
-				Handles.DrawLine(new Vector3(_connectingFromNode.Position.x + (_nodeSize.x / 2), _connectingFromNode.Position.y + (_nodeSize.y / 2), 0),
+				Handles.DrawLine(new Vector3(_connectingFromNode.Position.x + (_connectingFromNode.Size.x / 2), _connectingFromNode.Position.y + (_connectingFromNode.Size.y / 2), 0),
 								 new Vector3(currentEvent.mousePosition.x, currentEvent.mousePosition.y,
 							 	 0), 4f);
 				GUI.changed = true;
@@ -257,15 +288,15 @@ namespace FedoraDev.PointOfInterest.Editor
 				Handles.color = Color.white;
 				INodeBridge bridge = NodeWeb.Bridges[i];
 
-				Vector3 pos = new Vector3(bridge.Position.x + (_bridgeSize.x / 2), bridge.Position.y + (_bridgeSize.y / 2), 0);
+				Vector3 pos = new Vector3(bridge.Position.x + (bridge.Size.x / 2), bridge.Position.y + (bridge.Size.y / 2), 0);
 				for (int j = 0; j < bridge.Connections.Length; j++)
 				{
 					INode node = bridge.Connections[j].Node;
 					Rect nodePos = node.Position;
-					Vector2 deletePosition = (new Vector2(node.Position.x + (_nodeSize.x / 2), node.Position.y + (_nodeSize.y / 2)) + new Vector2(bridge.Position.x + (_bridgeSize.x / 2), bridge.Position.y + (_bridgeSize.y / 2))) / 2;
+					Vector2 deletePosition = (new Vector2(node.Position.x + (node.Size.x / 2), node.Position.y + (node.Size.y / 2)) + new Vector2(bridge.Position.x + (bridge.Size.x / 2), bridge.Position.y + (bridge.Size.y / 2))) / 2;
 					Vector2 floatPosition = deletePosition + new Vector2(-25, 20);
 
-					Handles.DrawLine(new Vector3(nodePos.x + (_nodeSize.x / 2), nodePos.y + (_nodeSize.y / 2), 0), pos, 3f);
+					Handles.DrawLine(new Vector3(nodePos.x + (node.Size.x / 2), nodePos.y + (node.Size.y / 2), 0), pos, 3f);
 					if (GUI.Button(new Rect(deletePosition.x - 10, deletePosition.y - 10, 20, 20), "x"))
 					{
 						List<INodeBridge> bridges = new List<INodeBridge>(node.Bridges);
@@ -305,26 +336,25 @@ namespace FedoraDev.PointOfInterest.Editor
 				Vector2 objectCenter = Vector2.zero;
 
 				for (int i = 0; i < NodeWeb.Nodes.Length; i++)
-					objectCenter += new Vector2(NodeWeb.Nodes[i].Position.x, NodeWeb.Nodes[i].Position.y);
+					objectCenter += NodeWeb.Nodes[i].Position.position + (NodeWeb.Nodes[i].Position.size / 2);
 
 				for (int i = 0; i < NodeWeb.Bridges.Length; i++)
-					objectCenter += new Vector2(NodeWeb.Bridges[i].Position.x, NodeWeb.Bridges[i].Position.y);
+					objectCenter += NodeWeb.Bridges[i].Position.position + (NodeWeb.Bridges[i].Position.size / 2);
 
 				objectCenter /= (NodeWeb.Nodes.Length + NodeWeb.Bridges.Length);
 				Vector2 offset = -objectCenter;
+				offset = new Vector2(Mathf.Round(offset.x / 100) * 100, Mathf.Round(offset.y / 100) * 100);
 
 				for (int i = 0; i < NodeWeb.Nodes.Length; i++)
 				{
-					Rect pos = NodeWeb.Nodes[i].Position;
-					pos = new Rect(pos.x + offset.x + position.width / 2, pos.y + offset.y + position.height / 2, pos.width, pos.height);
-					NodeWeb.Nodes[i].Position = pos;
+					NodeWeb.Nodes[i].Move(offset + (position.size / 2));
+					NodeWeb.Nodes[i].Place();
 				}
 
 				for (int i = 0; i < NodeWeb.Bridges.Length; i++)
 				{
-					Rect pos = NodeWeb.Bridges[i].Position;
-					pos = new Rect(pos.x + offset.x + position.width / 2, pos.y + offset.y + position.height / 2, pos.width, pos.height);
-					NodeWeb.Bridges[i].Position = pos;
+					NodeWeb.Bridges[i].Move(offset + (position.size / 2));
+					NodeWeb.Bridges[i].Place();
 				}
 
 				NodeWeb.Offset = new Vector2(position.width / 2, position.height / 2);
@@ -332,7 +362,9 @@ namespace FedoraDev.PointOfInterest.Editor
 				AssetDatabase.SaveAssets();
 			}
 		}
+		#endregion
 
+		#region Processing
 		void ProcessConnectionEvents(Event currentEvent)
 		{
 			switch (currentEvent.type)
@@ -385,7 +417,7 @@ namespace FedoraDev.PointOfInterest.Editor
 
 								Vector2 bridgePosition = (new Vector2(_connectingFromNode.Position.x, _connectingFromNode.Position.y) + new Vector2(node.Position.x, node.Position.y)) / 2;
 
-								bridge.Position = new Rect(bridgePosition, _bridgeSize);
+								bridge.Position = new Rect(bridgePosition, bridge.Size);
 								bridge.Connections = bridge.Connections.Append(nodeAConnection).Append(nodeBConnection).ToArray();
 								NodeWeb.Bridges = NodeWeb.Bridges.Append(bridge).ToArray();
 								node.Bridges = node.Bridges.Append(bridge).ToArray();
@@ -458,7 +490,11 @@ namespace FedoraDev.PointOfInterest.Editor
 
 				case EventType.MouseUp:
 					if (currentEvent.button == 2)
+					{
+						for (int i = 0; i < NodeWeb.Nodes.Length; i++)
+							NodeWeb.Nodes[i].Place();
 						AssetDatabase.SaveAssets();
+					}
 					break;
 
 				case EventType.DragUpdated:
@@ -490,7 +526,7 @@ namespace FedoraDev.PointOfInterest.Editor
 							node = Activator.CreateInstance(GetAllThatImplement<INode>()[0]) as INode;
 						else
 							node = NodeWeb.Nodes[NodeWeb.Nodes.Length - 1].CreateCopy();
-						node.Position = new Rect(currentEvent.mousePosition.x, currentEvent.mousePosition.y, _nodeSize.x, _nodeSize.y);
+						node.Position = new Rect(currentEvent.mousePosition, node.Size);
 						node.PointOfInterest = poi;
 						NodeWeb.Nodes = NodeWeb.Nodes.Append(node).ToArray();
 						AssetDatabase.SaveAssets();
@@ -549,26 +585,18 @@ namespace FedoraDev.PointOfInterest.Editor
 
 			genericMenu.ShowAsContext();
 		}
+		#endregion
 
+		#region OnEvents
 		void OnDrag(Vector2 delta)
 		{
 			NodeWeb.Offset += delta;
 
 			for (int i = 0; i < NodeWeb.Nodes.Length; i++)
-			{
-				Rect pos = NodeWeb.Nodes[i].Position;
-				pos.x += delta.x;
-				pos.y += delta.y;
-				NodeWeb.Nodes[i].Position = pos;
-			}
+				NodeWeb.Nodes[i].Move(delta);
 
 			for (int i = 0; i < NodeWeb.Bridges.Length; i++)
-			{
-				Rect pos = NodeWeb.Bridges[i].Position;
-				pos.x += delta.x;
-				pos.y += delta.y;
-				NodeWeb.Bridges[i].Position = pos;
-			}
+				NodeWeb.Bridges[i].Move(delta);
 
 			GUI.changed = true;
 		}
@@ -576,7 +604,7 @@ namespace FedoraDev.PointOfInterest.Editor
 		void OnClickAddNode(Type nodeType, Vector2 mousePosition)
 		{
 			INode node = Activator.CreateInstance(nodeType) as INode;
-			node.Position = new Rect(mousePosition.x, mousePosition.y, _nodeSize.x, _nodeSize.y);
+			node.Position = new Rect(mousePosition, node.Size);
 
 			NodeWeb.Nodes = NodeWeb.Nodes.Append(node).ToArray();
 			AssetDatabase.SaveAssets();
@@ -585,7 +613,7 @@ namespace FedoraDev.PointOfInterest.Editor
 		void OnClickAddBridge(Type bridgeType, Vector2 mousePosition)
 		{
 			INodeBridge bridge = Activator.CreateInstance(bridgeType) as INodeBridge;
-			bridge.Position = new Rect(mousePosition.x, mousePosition.y, _bridgeSize.x, _bridgeSize.y);
+			bridge.Position = new Rect(mousePosition, bridge.Size);
 
 			NodeWeb.Bridges = NodeWeb.Bridges.Append(bridge).ToArray();
 			AssetDatabase.SaveAssets();
@@ -634,5 +662,6 @@ namespace FedoraDev.PointOfInterest.Editor
 			NodeWeb.Bridges = bridges.ToArray();
 			AssetDatabase.SaveAssets();
 		}
+		#endregion
 	}
 }

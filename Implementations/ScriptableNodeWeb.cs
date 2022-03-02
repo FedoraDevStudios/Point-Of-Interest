@@ -1,4 +1,5 @@
 using Sirenix.OdinInspector;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace FedoraDev.PointOfInterest.Implementations
@@ -70,6 +71,15 @@ namespace FedoraDev.PointOfInterest.Implementations
 		[SerializeField, ReadOnly] INode[] _nodes = new INode[0];
 		[SerializeField, ReadOnly] INodeBridge[] _bridges = new INodeBridge[0];
 
+		public IPointOfInterest[] GetShortestPath(IPointOfInterest start, IPointOfInterest end, params IPointOfInterest[] mustVisitPOIs)
+		{
+			List<IPointOfInterest> pois = new List<IPointOfInterest>();
+
+
+			return pois.ToArray();
+		}
+
+		#region Produce In Editor
 #if UNITY_EDITOR
 		public static INodeWeb ProduceInEditor(string location)
 		{
@@ -101,5 +111,6 @@ namespace FedoraDev.PointOfInterest.Implementations
 			return nodeWeb;
 		}
 #endif
+		#endregion
 	}
 }
