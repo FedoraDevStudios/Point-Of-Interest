@@ -1,7 +1,5 @@
-using FedoraDev.PointOfInterest.Implementations;
 using UnityEditor;
 using UnityEditor.Callbacks;
-using UnityEngine;
 
 namespace FedoraDev.PointOfInterest.Editor
 {
@@ -10,11 +8,11 @@ namespace FedoraDev.PointOfInterest.Editor
 		[OnOpenAsset]
 		public static bool OpenNodeWeb(int instanceID, int line)
 		{
-			ScriptableNodeWeb nodeWeb = EditorUtility.InstanceIDToObject(instanceID) as ScriptableNodeWeb;
+			INodeWeb nodeWeb = EditorUtility.InstanceIDToObject(instanceID) as INodeWeb;
 			if (nodeWeb == null)
 				return false;
 
-			PointOfInterestNodeEditor.OpenWindow(nodeWeb);
+			NodeEditor.OpenWindow(nodeWeb);
 			return true;
 		}
 	}

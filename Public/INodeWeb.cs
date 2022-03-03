@@ -6,8 +6,13 @@ namespace FedoraDev.PointOfInterest
     {
         string Name { get; }
         INode[] Nodes { get; set; }
-        INodeBridge[] Bridges { get; set; }
+        IConnection[] Connections { get; set; }
         Vector2 Offset { get; set; }
-        IPointOfInterest[] GetShortestPath(IPointOfInterest start, IPointOfInterest end, params IPointOfInterest[] mustVisitPOIs);
+
+        void AddNode(INode node);
+        void RemoveNode(INode node);
+        void AddConnection(IConnection connection);
+        void RemoveConnection(IConnection connection);
+        //IPointOfInterest[] GetShortestPath(IPointOfInterest start, IPointOfInterest end, params IPointOfInterest[] mustVisitPOIs);
     }
 }

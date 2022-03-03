@@ -6,9 +6,11 @@ namespace FedoraDev.PointOfInterest
     {
         string Name { get; }
         Vector2 Size { get; }
-        INodeBridgeConnection[] Connections { get; set; }
+        IConnection[] Connections { get; }
         Rect Position { get; set; }
 
+        void AddConnection(IConnection connection);
+        void RemoveConnection(INode node);
         bool ProcessEvents(Event currentEvent);
         INodeBridge CreateCopy();
         void Move(Vector2 delta);

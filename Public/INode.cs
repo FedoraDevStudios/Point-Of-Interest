@@ -5,14 +5,14 @@ namespace FedoraDev.PointOfInterest
     public interface INode
     {
         string Name { get; }
+        IConnection[] Connections { get; }
+        Vector2 Position { get; set; }
         Vector2 Size { get; }
-        IPointOfInterest PointOfInterest { get; set; }
-        INodeBridge[] Bridges { get; set; }
-        Rect Position { get; set; }
+        Vector2 ConnectPosition { get; }
+        Vector2 ConnectSize { get; }
 
-        bool ProcessEvents(Event currentEvent);
-        INode CreateCopy();
+        void AddConnection(IConnection connection);
+        void RemoveConnection(INode otherNode);
         void Move(Vector2 delta);
-        void Place();
     }
 }

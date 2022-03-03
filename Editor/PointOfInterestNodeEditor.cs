@@ -104,13 +104,13 @@ namespace FedoraDev.PointOfInterest.Editor
 
 			_nodeWebClasses = GetAllThatImplement<INodeWeb>();
 
-			if (NodeWeb != null)
-			{
-				for (int i = 0; i < NodeWeb.Nodes.Length; i++)
-					NodeWeb.Nodes[i].Position = new Rect(NodeWeb.Nodes[i].Position.x, NodeWeb.Nodes[i].Position.y, NodeWeb.Nodes[i].Size.x, NodeWeb.Nodes[i].Size.y);
-				for (int i = 0; i < NodeWeb.Bridges.Length; i++)
-					NodeWeb.Bridges[i].Position = new Rect(NodeWeb.Bridges[i].Position.x, NodeWeb.Bridges[i].Position.y, NodeWeb.Bridges[i].Size.x, NodeWeb.Bridges[i].Size.y);
-			}
+			//if (NodeWeb != null)
+			//{
+			//	for (int i = 0; i < NodeWeb.Nodes.Length; i++)
+			//		NodeWeb.Nodes[i].Position = new Rect(NodeWeb.Nodes[i].Position.x, NodeWeb.Nodes[i].Position.y, NodeWeb.Nodes[i].Size.x, NodeWeb.Nodes[i].Size.y);
+			//	for (int i = 0; i < NodeWeb.Bridges.Length; i++)
+			//		NodeWeb.Bridges[i].Position = new Rect(NodeWeb.Bridges[i].Position.x, NodeWeb.Bridges[i].Position.y, NodeWeb.Bridges[i].Size.x, NodeWeb.Bridges[i].Size.y);
+			//}
 		}
 
 		private void OnDisable()
@@ -260,107 +260,101 @@ namespace FedoraDev.PointOfInterest.Editor
 			for (int i = 0; i < NodeWeb.Nodes.Length; i++)
 			{
 				INode node = NodeWeb.Nodes[i];
-				Rect textBox = node.Position;
-				textBox.height -= 10;
-				textBox.y += 5;
-				Rect objectBox = textBox;
-				Rect connectionBox = textBox;
-				float boxHeight = textBox.height / 2f;
+				//Rect textBox = node.Position;
+				//textBox.height -= 10;
+				//textBox.y += 5;
+				//Rect objectBox = textBox;
+				//Rect connectionBox = textBox;
+				//float boxHeight = textBox.height / 2f;
 
-				objectBox.height = boxHeight;
-				connectionBox.height = boxHeight - 12;
-				connectionBox.width = textBox.width - 24;
+				//objectBox.height = boxHeight;
+				//connectionBox.height = boxHeight - 12;
+				//connectionBox.width = textBox.width - 24;
 
-				objectBox.position = new Vector2(objectBox.position.x, objectBox.position.y);
-				connectionBox.position = new Vector2(connectionBox.position.x + 12, connectionBox.position.y + boxHeight);
+				//objectBox.position = new Vector2(objectBox.position.x, objectBox.position.y);
+				//connectionBox.position = new Vector2(connectionBox.position.x + 12, connectionBox.position.y + boxHeight);
 
-				GUI.Box(node.Position, string.Empty, _nodeStyle);
-				GUI.Label(objectBox, node.PointOfInterest == null ? "No PoI" : node.PointOfInterest.Name, _textStyle);
-				GUI.Label(connectionBox, "->", _connectionStyle);
+				//GUI.Box(node.Position, string.Empty, _nodeStyle);
+				//GUI.Label(objectBox, node.PointOfInterest == null ? "No PoI" : node.PointOfInterest.Name, _textStyle);
+				//GUI.Label(connectionBox, "->", _connectionStyle);
 			}
 		}
 
 		void DrawBridges()
 		{
-			for (int i = 0; i < NodeWeb.Bridges.Length; i++)
-			{
-				Handles.BeginGUI();
-				Handles.color = Color.white;
-				INodeBridge bridge = NodeWeb.Bridges[i];
+			//for (int i = 0; i < NodeWeb.Bridges.Length; i++)
+			//{
+			//	Handles.BeginGUI();
+			//	Handles.color = Color.white;
+			//	INodeBridge bridge = NodeWeb.Bridges[i];
 
-				Vector3 pos = new Vector3(bridge.Position.x + (bridge.Size.x / 2), bridge.Position.y + (bridge.Size.y / 2), 0);
-				for (int j = 0; j < bridge.Connections.Length; j++)
-				{
-					INode node = bridge.Connections[j].Node;
-					Rect nodePos = node.Position;
-					Vector2 deletePosition = (new Vector2(node.Position.x + (node.Size.x / 2), node.Position.y + (node.Size.y / 2)) + new Vector2(bridge.Position.x + (bridge.Size.x / 2), bridge.Position.y + (bridge.Size.y / 2))) / 2;
-					Vector2 floatPosition = deletePosition + new Vector2(-25, 20);
+			//	Vector3 pos = new Vector3(bridge.Position.x + (bridge.Size.x / 2), bridge.Position.y + (bridge.Size.y / 2), 0);
+			//	for (int j = 0; j < bridge.Connections.Length; j++)
+			//	{
+			//		//INode node = bridge.Connections[j].Node;
+			//		//Rect nodePos = node.Position;
+			//		//Vector2 deletePosition = (new Vector2(node.Position.x + (node.Size.x / 2), node.Position.y + (node.Size.y / 2)) + new Vector2(bridge.Position.x + (bridge.Size.x / 2), bridge.Position.y + (bridge.Size.y / 2))) / 2;
+			//		//Vector2 floatPosition = deletePosition + new Vector2(-25, 20);
 
-					Handles.DrawLine(new Vector3(nodePos.x + (node.Size.x / 2), nodePos.y + (node.Size.y / 2), 0), pos, 3f);
-					if (GUI.Button(new Rect(deletePosition.x - 10, deletePosition.y - 10, 20, 20), "x"))
-					{
-						List<INodeBridge> bridges = new List<INodeBridge>(node.Bridges);
-						bridges.Remove(bridge);
-						node.Bridges = bridges.ToArray();
+			//		//Handles.DrawLine(new Vector3(nodePos.x + (node.Size.x / 2), nodePos.y + (node.Size.y / 2), 0), pos, 3f);
+			//		//if (GUI.Button(new Rect(deletePosition.x - 10, deletePosition.y - 10, 20, 20), "x"))
+			//		//{
+			//		//	node.RemoveConnection(bridge);
+			//		//	bridge.RemoveConnection(node);
+			//		//	GUI.changed = true;
+			//		//	return;
+			//		//}
 
-						List<INodeBridgeConnection> conns = new List<INodeBridgeConnection>(bridge.Connections);
-						conns.RemoveAt(j);
-						bridge.Connections = conns.ToArray();
-						GUI.changed = true;
+			//		//float oldValue = bridge.Connections[j].Distance;
+			//		//bridge.Connections[j].Distance = EditorGUI.FloatField(new Rect(floatPosition.x, floatPosition.y, 50, 20), bridge.Connections[j].Distance);
+			//		//if (bridge.Connections[j].Distance != oldValue)
+			//		//{
+			//		//	AssetDatabase.SaveAssets();
+			//		//	GUI.changed = true;
+			//		//	return;
+			//		//}
+			//	}
+			//	Handles.EndGUI();
 
-						return;
-					}
-
-					float oldValue = bridge.Connections[j].Distance;
-					bridge.Connections[j].Distance = EditorGUI.FloatField(new Rect(floatPosition.x, floatPosition.y, 50, 20), bridge.Connections[j].Distance);
-					if (bridge.Connections[j].Distance != oldValue)
-					{
-						AssetDatabase.SaveAssets();
-						GUI.changed = true;
-						return;
-					}
-				}
-				Handles.EndGUI();
-
-				GUI.Box(bridge.Position, bridge.Name, _bridgeStyle);
-			}
+			//	GUI.Box(bridge.Position, bridge.Name, _bridgeStyle);
+			//}
 		}
 
 		void DrawUI()
 		{
-			float width = 100f;
-			float btnWidth = 100;
-			GUI.Box(new Rect(position.width - width, 0, width, 25), $"({NodeWeb.Offset.x}, {NodeWeb.Offset.y})", _uiPositionStyle);
-			if (GUI.Button(new Rect(position.width - width - btnWidth, 0, btnWidth, 25), "Recenter"))
-			{
-				Vector2 objectCenter = Vector2.zero;
+			//float width = 100f;
+			//float btnWidth = 100;
+			//GUI.Box(new Rect(position.width - width, 0, width, 25), $"({NodeWeb.Offset.x}, {NodeWeb.Offset.y})", _uiPositionStyle);
+			//if (GUI.Button(new Rect(position.width - width - btnWidth, 0, btnWidth, 25), "Recenter"))
+			//{
+			//	Vector2 objectCenter = Vector2.zero;
 
-				for (int i = 0; i < NodeWeb.Nodes.Length; i++)
-					objectCenter += NodeWeb.Nodes[i].Position.position + (NodeWeb.Nodes[i].Position.size / 2);
+			//	for (int i = 0; i < NodeWeb.Nodes.Length; i++)
+			//		objectCenter += NodeWeb.Nodes[i].Position.position + (NodeWeb.Nodes[i].Position.size / 2);
 
-				for (int i = 0; i < NodeWeb.Bridges.Length; i++)
-					objectCenter += NodeWeb.Bridges[i].Position.position + (NodeWeb.Bridges[i].Position.size / 2);
+			//	for (int i = 0; i < NodeWeb.Bridges.Length; i++)
+			//		objectCenter += NodeWeb.Bridges[i].Position.position + (NodeWeb.Bridges[i].Position.size / 2);
 
-				objectCenter /= (NodeWeb.Nodes.Length + NodeWeb.Bridges.Length);
-				Vector2 offset = -objectCenter;
-				offset = new Vector2(Mathf.Round(offset.x / 100) * 100, Mathf.Round(offset.y / 100) * 100);
+			//	objectCenter /= (NodeWeb.Nodes.Length + NodeWeb.Bridges.Length);
+			//	Vector2 offset = -objectCenter;
+			//	offset = new Vector2(Mathf.Round(offset.x / 100) * 100, Mathf.Round(offset.y / 100) * 100);
 
-				for (int i = 0; i < NodeWeb.Nodes.Length; i++)
-				{
-					NodeWeb.Nodes[i].Move(offset + (position.size / 2));
-					NodeWeb.Nodes[i].Place();
-				}
+			//	for (int i = 0; i < NodeWeb.Nodes.Length; i++)
+			//	{
+			//		NodeWeb.Nodes[i].Move(offset + (position.size / 2));
+			//		//NodeWeb.Nodes[i].Place();
+			//	}
 
-				for (int i = 0; i < NodeWeb.Bridges.Length; i++)
-				{
-					NodeWeb.Bridges[i].Move(offset + (position.size / 2));
-					NodeWeb.Bridges[i].Place();
-				}
+			//	for (int i = 0; i < NodeWeb.Bridges.Length; i++)
+			//	{
+			//		NodeWeb.Bridges[i].Move(offset + (position.size / 2));
+			//		NodeWeb.Bridges[i].Place();
+			//	}
 
-				NodeWeb.Offset = new Vector2(position.width / 2, position.height / 2);
+			//	NodeWeb.Offset = new Vector2(position.width / 2, position.height / 2);
 
-				AssetDatabase.SaveAssets();
-			}
+			//	AssetDatabase.SaveAssets();
+			//}
 		}
 		#endregion
 
@@ -372,82 +366,82 @@ namespace FedoraDev.PointOfInterest.Editor
 				case EventType.MouseDown:
 					if (currentEvent.button == 0)
 					{
-						for (int i = 0; i < NodeWeb.Nodes.Length; i++)
-						{
-							INode node = NodeWeb.Nodes[i];
-							float thirdHeight = node.Position.height / 2f;
-							Rect connectionRect = new Rect(node.Position.x, thirdHeight + node.Position.y, node.Position.width, thirdHeight);
-							if (connectionRect.Contains(currentEvent.mousePosition))
-							{
-								_connectingNodes = true;
-								_connectingFromNode = node;
-								currentEvent.Use();
-								GUI.changed = true;
-								return;
-							}
-						}
+						//for (int i = 0; i < NodeWeb.Nodes.Length; i++)
+						//{
+						//	INode node = NodeWeb.Nodes[i];
+						//	float thirdHeight = node.Position.height / 2f;
+						//	Rect connectionRect = new Rect(node.Position.x, thirdHeight + node.Position.y, node.Position.width, thirdHeight);
+						//	if (connectionRect.Contains(currentEvent.mousePosition))
+						//	{
+						//		_connectingNodes = true;
+						//		_connectingFromNode = node;
+						//		currentEvent.Use();
+						//		GUI.changed = true;
+						//		return;
+						//	}
+						//}
 					}
 					break;
 
 				case EventType.MouseUp:
 					if (_connectingNodes && currentEvent.button == 0)
 					{
-						for (int i = 0; i < NodeWeb.Nodes.Length; i++)
-						{
-							INode node = NodeWeb.Nodes[i];
-							if (node.Position.Contains(currentEvent.mousePosition))
-							{
-								if (_connectingFromNode == node)
-									continue;
+						//for (int i = 0; i < NodeWeb.Nodes.Length; i++)
+						//{
+						//	INode node = NodeWeb.Nodes[i];
+						//	if (node.Position.Contains(currentEvent.mousePosition))
+						//	{
+						//		if (_connectingFromNode == node)
+						//			continue;
 
-								INodeBridgeConnection nodeAConnection = FactoryInstance.ProduceNodeBridgeConnection();
-								INodeBridgeConnection nodeBConnection = FactoryInstance.ProduceNodeBridgeConnection();
-								INodeBridge bridge;
+						//		IConnection nodeAConnection = FactoryInstance.ProduceNodeBridgeConnection();
+						//		IConnection nodeBConnection = FactoryInstance.ProduceNodeBridgeConnection();
+						//		INodeBridge bridge = Activator.CreateInstance(GetAllThatImplement<INodeBridge>()[0]) as INodeBridge;
 
-								if (NodeWeb.Bridges.Length == 0)
-									bridge = Activator.CreateInstance(GetAllThatImplement<INodeBridge>()[0]) as INodeBridge;
-								else
-									bridge = NodeWeb.Bridges[0].CreateCopy();
+						//		nodeAConnection.Distance = 0;
+						//		//nodeAConnection.Node = node;
+						//		//nodeAConnection.Bridge = bridge;
 
-								nodeAConnection.Distance = 0;
-								nodeAConnection.Node = node;
+						//		nodeBConnection.Distance = 0;
+						//		//nodeBConnection.Node = _connectingFromNode;
+						//		//nodeBConnection.Bridge = bridge;
 
-								nodeBConnection.Distance = 0;
-								nodeBConnection.Node = _connectingFromNode;
+						//		Vector2 bridgePosition = (_connectingFromNode.Position.position + node.Position.position) / 2;
 
-								Vector2 bridgePosition = (new Vector2(_connectingFromNode.Position.x, _connectingFromNode.Position.y) + new Vector2(node.Position.x, node.Position.y)) / 2;
+						//		bridge.Position = new Rect(Vector2.zero, bridge.Size);
+						//		bridge.Move(bridgePosition);
+						//		bridge.AddConnection(nodeAConnection);
+						//		bridge.AddConnection(nodeBConnection);
+						//		NodeWeb.Bridges = NodeWeb.Bridges.Append(bridge).ToArray();
+						//		node.AddConnection(nodeBConnection);
+						//		_connectingFromNode.AddConnection(nodeAConnection);
 
-								bridge.Position = new Rect(bridgePosition, bridge.Size);
-								bridge.Connections = bridge.Connections.Append(nodeAConnection).Append(nodeBConnection).ToArray();
-								NodeWeb.Bridges = NodeWeb.Bridges.Append(bridge).ToArray();
-								node.Bridges = node.Bridges.Append(bridge).ToArray();
-								_connectingFromNode.Bridges = _connectingFromNode.Bridges.Append(bridge).ToArray();
+						//		AssetDatabase.SaveAssets();
+						//	}
+						//}
 
-								AssetDatabase.SaveAssets();
-							}
-						}
+						//for (int i = 0; i < NodeWeb.Bridges.Length; i++)
+						//{
+						//	INodeBridge bridge = NodeWeb.Bridges[i];
+						//	if (bridge.Position.Contains(currentEvent.mousePosition))
+						//	{
+						//		//bool cont = false;
+						//		//for (int j = 0; j < bridge.Connections.Length; j++)
+						//		//	if (bridge.Connections[j].Node == _connectingFromNode)
+						//		//		cont = true;
+						//		//if (cont) continue;
 
-						for (int i = 0; i < NodeWeb.Bridges.Length; i++)
-						{
-							INodeBridge bridge = NodeWeb.Bridges[i];
-							if (bridge.Position.Contains(currentEvent.mousePosition))
-							{
-								bool cont = false;
-								for (int j = 0; j < bridge.Connections.Length; j++)
-									if (bridge.Connections[j].Node == _connectingFromNode)
-										cont = true;
-								if (cont) continue;
+						//		IConnection nodeConnection = FactoryInstance.ProduceNodeBridgeConnection();
 
-								INodeBridgeConnection nodeConnection = FactoryInstance.ProduceNodeBridgeConnection();
+						//		nodeConnection.Distance = 0;
+						//		//nodeConnection.Node = _connectingFromNode;
+						//		//nodeConnection.Bridge = bridge;
 
-								nodeConnection.Distance = 0;
-								nodeConnection.Node = _connectingFromNode;
-
-								bridge.Connections = bridge.Connections.Append(nodeConnection).ToArray();
-								_connectingFromNode.Bridges = _connectingFromNode.Bridges.Append(bridge).ToArray();
-								AssetDatabase.SaveAssets();
-							}
-						}
+						//		bridge.AddConnection(nodeConnection);
+						//		_connectingFromNode.AddConnection(nodeConnection);
+						//		AssetDatabase.SaveAssets();
+						//	}
+						//}
 
 						_connectingNodes = false;
 						_connectingFromNode = null;
@@ -460,18 +454,18 @@ namespace FedoraDev.PointOfInterest.Editor
 		{
 			for (int i = 0; i < NodeWeb.Nodes.Length; i++)
 			{
-				if (NodeWeb.Nodes[i].ProcessEvents(currentEvent))
-					GUI.changed = true;
+				//if (NodeWeb.Nodes[i].ProcessEvents(currentEvent))
+				//	GUI.changed = true;
 			}
 		}
 
 		void ProcessBridgeEvents(Event currentEvent)
 		{
-			for (int i = 0; i < NodeWeb.Bridges.Length; i++)
-			{
-				if (NodeWeb.Bridges[i].ProcessEvents(currentEvent))
-					GUI.changed = true;
-			}
+			//for (int i = 0; i < NodeWeb.Bridges.Length; i++)
+			//{
+			//	if (NodeWeb.Bridges[i].ProcessEvents(currentEvent))
+			//		GUI.changed = true;
+			//}
 		}
 
 		void ProcessEvents(Event currentEvent)
@@ -491,8 +485,8 @@ namespace FedoraDev.PointOfInterest.Editor
 				case EventType.MouseUp:
 					if (currentEvent.button == 2)
 					{
-						for (int i = 0; i < NodeWeb.Nodes.Length; i++)
-							NodeWeb.Nodes[i].Place();
+						//for (int i = 0; i < NodeWeb.Nodes.Length; i++)
+						//	NodeWeb.Nodes[i].Place();
 						AssetDatabase.SaveAssets();
 					}
 					break;
@@ -508,8 +502,8 @@ namespace FedoraDev.PointOfInterest.Editor
 				case EventType.DragPerform:
 					for (int i = 0; i < NodeWeb.Nodes.Length; i++)
 					{
-						if (NodeWeb.Nodes[i].Position.Contains(currentEvent.mousePosition))
-							NodeWeb.Nodes[i].PointOfInterest = DragAndDrop.objectReferences[0] as IPointOfInterest;
+						//if (NodeWeb.Nodes[i].Position.Contains(currentEvent.mousePosition))
+						//	NodeWeb.Nodes[i].PointOfInterest = DragAndDrop.objectReferences[0] as IPointOfInterest;
 						currentEvent.Use();
 						GUI.changed = true;
 					}
@@ -522,13 +516,13 @@ namespace FedoraDev.PointOfInterest.Editor
 
 						INode node;
 
-						if (NodeWeb.Nodes.Length == 0)
-							node = Activator.CreateInstance(GetAllThatImplement<INode>()[0]) as INode;
-						else
-							node = NodeWeb.Nodes[NodeWeb.Nodes.Length - 1].CreateCopy();
-						node.Position = new Rect(currentEvent.mousePosition, node.Size);
-						node.PointOfInterest = poi;
-						NodeWeb.Nodes = NodeWeb.Nodes.Append(node).ToArray();
+						//if (NodeWeb.Nodes.Length == 0)
+						//	node = Activator.CreateInstance(GetAllThatImplement<INode>()[0]) as INode;
+						//else
+						//	node = NodeWeb.Nodes[NodeWeb.Nodes.Length - 1].CreateCopy();
+						//node.Position = new Rect(currentEvent.mousePosition - node.Size, node.Size);
+						//node.PointOfInterest = poi;
+						//NodeWeb.Nodes = NodeWeb.Nodes.Append(node).ToArray();
 						AssetDatabase.SaveAssets();
 					}
 					break;
@@ -543,26 +537,26 @@ namespace FedoraDev.PointOfInterest.Editor
 			for (int i = 0; i < NodeWeb.Nodes.Length; i++)
 			{
 				INode node = NodeWeb.Nodes[i];
-				if (node.Position.Contains(mousePosition))
-				{
-					genericMenu.AddItem(new GUIContent($"Remove {node.Name}"), false, () => OnClickRemoveNode(node));
-					added1 = true;
-				}
+				//if (node.Position.Contains(mousePosition))
+				//{
+				//	genericMenu.AddItem(new GUIContent($"Remove {node.Name}"), false, () => OnClickRemoveNode(node));
+				//	added1 = true;
+				//}
 			}
 
 			if (added1)
 				genericMenu.AddSeparator(string.Empty);
 
 			added1 = false;
-			for (int i = 0; i < NodeWeb.Bridges.Length; i++)
-			{
-				INodeBridge bridge = NodeWeb.Bridges[i];
-				if (bridge.Position.Contains(mousePosition))
-				{
-					genericMenu.AddItem(new GUIContent($"Remove {bridge.Name}"), false, () => OnClickRemoveBridge(bridge));
-					added1 = true;
-				}
-			}
+			//for (int i = 0; i < NodeWeb.Bridges.Length; i++)
+			//{
+			//	INodeBridge bridge = NodeWeb.Bridges[i];
+			//	if (bridge.Position.Contains(mousePosition))
+			//	{
+			//		genericMenu.AddItem(new GUIContent($"Remove {bridge.Name}"), false, () => OnClickRemoveBridge(bridge));
+			//		added1 = true;
+			//	}
+			//}
 
 			if (added1)
 				genericMenu.AddSeparator(string.Empty);
@@ -595,8 +589,8 @@ namespace FedoraDev.PointOfInterest.Editor
 			for (int i = 0; i < NodeWeb.Nodes.Length; i++)
 				NodeWeb.Nodes[i].Move(delta);
 
-			for (int i = 0; i < NodeWeb.Bridges.Length; i++)
-				NodeWeb.Bridges[i].Move(delta);
+			//for (int i = 0; i < NodeWeb.Bridges.Length; i++)
+			//	NodeWeb.Bridges[i].Move(delta);
 
 			GUI.changed = true;
 		}
@@ -604,9 +598,9 @@ namespace FedoraDev.PointOfInterest.Editor
 		void OnClickAddNode(Type nodeType, Vector2 mousePosition)
 		{
 			INode node = Activator.CreateInstance(nodeType) as INode;
-			node.Position = new Rect(mousePosition, node.Size);
+			//node.Position = new Rect(mousePosition, node.Size);
 
-			NodeWeb.Nodes = NodeWeb.Nodes.Append(node).ToArray();
+			//NodeWeb.Nodes = NodeWeb.Nodes.Append(node).ToArray();
 			AssetDatabase.SaveAssets();
 		}
 
@@ -615,22 +609,16 @@ namespace FedoraDev.PointOfInterest.Editor
 			INodeBridge bridge = Activator.CreateInstance(bridgeType) as INodeBridge;
 			bridge.Position = new Rect(mousePosition, bridge.Size);
 
-			NodeWeb.Bridges = NodeWeb.Bridges.Append(bridge).ToArray();
+			//NodeWeb.Bridges = NodeWeb.Bridges.Append(bridge).ToArray();
 			AssetDatabase.SaveAssets();
 		}
 
 		void OnClickRemoveNode(INode node)
 		{
-			for (int i = 0; i < node.Bridges.Length; i++)
+			for (int i = 0; i < node.Connections.Length; i++)
 			{
-				INodeBridge bridge = node.Bridges[i];
-				List<INodeBridgeConnection> nodeBridgeConnections = new List<INodeBridgeConnection>();
-
-				for (int j = 0; j < bridge.Connections.Length; j++)
-					if (bridge.Connections[j].Node != node)
-						nodeBridgeConnections.Add(bridge.Connections[j]);
-
-				bridge.Connections = nodeBridgeConnections.ToArray();
+				//INodeBridge bridge = node.Connections[i].Bridge;
+				//bridge.RemoveConnection(node);
 			}
 
 			List<INode> nodes = new List<INode>();
@@ -645,21 +633,15 @@ namespace FedoraDev.PointOfInterest.Editor
 		{
 			for (int i = 0; i < bridge.Connections.Length; i++)
 			{
-				INodeBridgeConnection connection = bridge.Connections[i];
-				List<INodeBridge> nodeBridges = new List<INodeBridge>();
-
-				for (int j = 0; j < connection.Node.Bridges.Length; j++)
-					if (connection.Node.Bridges[j] != bridge)
-						nodeBridges.Add(connection.Node.Bridges[j]);
-
-				connection.Node.Bridges = nodeBridges.ToArray();
+				IConnection connection = bridge.Connections[i];
+				//connection.Node.RemoveConnection(bridge);
 			}
 
 			List<INodeBridge> bridges = new List<INodeBridge>();
-			for (int i = 0; i < NodeWeb.Bridges.Length; i++)
-				if (NodeWeb.Bridges[i] != bridge)
-					bridges.Add(NodeWeb.Bridges[i]);
-			NodeWeb.Bridges = bridges.ToArray();
+			//for (int i = 0; i < NodeWeb.Bridges.Length; i++)
+			//	if (NodeWeb.Bridges[i] != bridge)
+			//		bridges.Add(NodeWeb.Bridges[i]);
+			//NodeWeb.Bridges = bridges.ToArray();
 			AssetDatabase.SaveAssets();
 		}
 		#endregion
